@@ -9,9 +9,9 @@
 		<script>
 			var c = document.getElementById("map");
 			var ctx = c.getContext("2d");
-			ctx.fillStyle = "#F4F4F4"; //Dunkelgrau füllen
-			ctx.strokeStyle = "#0040FF"; //Straßen sind blau
-			ctx.fillRect(0,0,500,500);
+			ctx.fillStyle = "#F4F4F4"; //Dunkelgrau füllen;
+			ctx.strokeStyle = "#0040FF"; //Straßen sind blau;
+			ctx.fillRect(0,0,500,500); //Füllen vom Canvas;
 			
 			for (var stra=0; stra < vectors.length; stra++)
 			{
@@ -21,12 +21,15 @@
 				{
 					vectors[stra][vec][0] -= leftUpperLongitude;
 					vectors[stra][vec][1] -= leftUpperLatitude;
+						// Jeder Vektor wird relativ zur oberen, linken Ecke angegeben;
 					var Xmax = rightDownLongitude - leftUpperLongitude;
 					var Ymax = rightDownLatitude - leftUpperLatitude;
+						// Die Breite/Höhe der Map wird berechnet;
 					vectors[stra][vec][0] /= (Xmax/500);
 					vectors[stra][vec][1] /= (Ymax/500);
-					//Der "drawer" bewegt sich zum nächsten Punkt der Straße;
+						//Die relative Position des Vektors im Canvas wird berechnet;
 					ctx.lineTo( Math.round(vectors[stra][vec][0]) , Math.round(vectors[stra][vec][1]) );
+						//Der "drawer" bewegt sich zum nächsten Punkt der Straße;
 				}
 			}
 			ctx.stroke();
