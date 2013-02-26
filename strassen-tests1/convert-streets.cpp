@@ -17,16 +17,16 @@ int main()
 		while(f_input.good())
 		{
 			getline(f_input, current);
-			string substring;
 			stringstream stream(current);
 			while(stream.good())
 			{
+				string substring;
 				getline(stream, substring, ',');
 				f_output << substring << endl;
 			}
 		}
 	}
-	return 0;
 	f_output.close();
 	f_input.close();
+	return 0;
 }
