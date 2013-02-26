@@ -1,13 +1,35 @@
 <!DOCTYPE html>
 <html>
+	<head>
+		<title>Canvas-Test</title>
+		<script src="catch.js"></script>
+	</head>
 	<body>
-		
-		
-		
-		
-		
-		<script >
-		
+		<canvas id="map" width="500" height="500" style="border:3px solid #ABBAFF;">This ain't supported by your browser.</canvas>
+		<script>
+			var c = document.getElementById("map");
+			var ctx = c.getContext("2d");
+			ctx.fillStyle = "#F4F4F4"; //Dunkelgrau füllen
+			ctx.strokeStyle = "#0040FF"; //Straßen sind blau
+			ctx.fillRect(0,0,500,500);
+			
+			for (var stra=0; stra < vectors.length; stra++)
+			{
+				ctx.moveTo( Math.round(vectors[stra][0][0]) , Math.round(vectors[stra][0][1]) );
+				//Der "drawer" setzt am ersten Punkt der Straße Nr. 'stra' an;
+				for (var vec=1; vec < vectors[stra].length; vec++)
+				{
+					vectors[stra][vec][0] -= leftUpperLongitude;
+					vectors[stra][vec][1] -= leftUpperLatitude;
+					var Xmax = rightDownLongitude - leftUpperLongitude;
+					var Ymax = rightDownLatitude - leftUpperLatitude;
+					vectors[stra][vec][0] /= (Xmax/500);
+					vectors[stra][vec][1] /= (Ymax/500);
+					//Der "drawer" bewegt sich zum nächsten Punkt der Straße;
+					ctx.lineTo( Math.round(vectors[stra][vec][0]) , Math.round(vectors[stra][vec][1]) );
+				}
+			}
+			ctx.stroke();
 		</script>
 	</body>
 </html>
