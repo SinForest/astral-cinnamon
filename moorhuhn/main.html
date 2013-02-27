@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Moorhuhn</title>
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<style type="text/css">
+			body,html{padding:0px;margin:0px;}
+			#container {
+				width:1050px !important; /*durch !important werden auch leere Elemente angezeigt*/
+				height:500px !important;
+				background-color:blue;
+				overflow: hidden;
+				margin:0;
+			}
+			*.element {
+				width: 50px !important;
+				height: 50px !imprtant;
+				background-color: yellow;
+				border: 1px solid red;
+				/*Angaben zur Position:*/
+				position: absolute;
+				top: 0px;
+				left:0px;
+			}
+		</style>
+		<script type="text/javascript">
+			var maxElements = 20;
+			var timer = 1.5; //Sekunden
+			
+			//Fkt zum erstellen von Elementen an zufaelliger Position links
+			function createElement() {
+				if ($(".element").length <= maxElements) {
+					var el = '<div class="element" style="left:0px;top:';				
+										// Werte von Container und Element
+					el += Math.round( Math.random() * ( 500 - 50) );
+					el += 'px;">&nbsp;</div>';
+					$("#container").append(el);
+					do_onclick();
+				}
+			}
+			
+			//onclick Fkt der elemente
+			function do_onclick() {
+				$(".element").click(function() {
+					//Löschfunktion
+					$(this).remove();
+				});
+			}
+			
+			function move(el) {
+				var speedLeft = 1 + Math.round( Math.random() * 9); //zwischen 1 und 10
+				var speedTop  = -4 + Math.round( Math.random() * 8); //zwischen -4 und 4
+				el.css({left: (parseInt(el.css('left').substring(0, el.css('left').indexOf('px')))+speedLeft) +'px'});
+				el.css({top: (parseInt(el.css('top').substring(0, el.css('top').indexOf('px')))+speedTop) +'px'});
+			}	
+			
+			
+			function step(){
+				$(".element").each(function(){
+					var fromLeft = parseInt($(this).css('left').substring(0, $(this).css('left').indexOf('px')));
+					var fromTop  = parseInt($(this).css('top').substring(0, $(this).css('top').indexOf('px')));
+					if( (fromLeft >= 0) && (fromLeft <= 1000) && (fromTop >= 0) && (fromTop <= 500) ) {
+						move($(this));	
+					} else {
+						$(this).remove();
+					}
+				});			
+			}
+			
+			$(document).ready(function() {
+				createElement();
+				setInterval(function(){step();}, 50);					//Timer für Bewegungen alle X ms 
+				setInterval(function(){createElement();}, timer*1000);	//Timer für neue Elemente erstellen
+			});
+			
+		</script>
+	</head>
+	<body>
+		<div id="container"></div>		
+	</body>
+</html>
