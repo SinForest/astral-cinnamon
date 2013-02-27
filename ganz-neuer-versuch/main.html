@@ -5,11 +5,11 @@
 		<!-- Globale Variablen -->
 			<script>
 			var canW = 1280
-			var canH = 1024
-			var leftUpperLongitude = 8.659085; //Laengengrad X
-			var leftUpperLatitude = 49.434311; //Breitengrad Y
-			var rightDownLatitude = 49.390474; //Breitengrad Y
-			var rightDownLongitude = 8.712819; //Laengengrad X
+			var canH = 1024										//GET Variable auf dem Server
+			var leftUpperLongitude = 8.659085; //Laengengrad X 	x0		//Bsp Aufruf: http://testing.thesinforest.eu/test.php?x0=8.659085&y0=49.434311&x1=8.712819&y1=49.390474
+			var leftUpperLatitude = 49.434311; //Breitengrad Y	y0	
+			var rightDownLongitude = 8.712819; //Laengengrad X	x1
+			var rightDownLatitude = 49.390474; //Breitengrad Y	y1
 			</script>
 		<!-- Ende -->
 		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
@@ -21,10 +21,11 @@
 		<script>
 			$(document).ready(function()
 			{
-				resetCanvas("map");
+				var map = $("#map");
+				resetCanvas(map);
 				var vect = getFromText("inputs.txt");
 				alert(vect[2][2][1]);
-				drawStreets("map", vect);
+				drawStreets(map, vect);
 			});
 		</script>
 	</body>

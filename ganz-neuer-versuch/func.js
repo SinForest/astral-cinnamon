@@ -41,16 +41,14 @@
 			
 			function resetCanvas(i_canvas)
 			{
-				var c = document.getElementById(i_canvas);
-				var ctx = c.getContext("2d");
+				var ctx = i_canvas.getContext("2d");
 				ctx.fillStyle = "#1F1F1F"; //Dunkelgrau füllen;
 				ctx.fillRect(0,0,canW,canH); //Füllen vom Canvas;
 			}
 			
 			function drawStreets(i_canvas, i_vectors)
 			{
-				var c = document.getElementById(i_canvas);
-				var ctx = c.getContext("2d");
+				var ctx = i_canvas.getContext("2d");
 				ctx.strokeStyle = "#0040FF"; //Straßen sind blau;
 				var Xmax = rightDownLongitude - leftUpperLongitude;					
 				var Ymax = rightDownLatitude - leftUpperLatitude;
