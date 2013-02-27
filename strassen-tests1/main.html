@@ -7,33 +7,37 @@
 	</head>
 	<body>
 		<div id="container" style="display:none"></div>
+		
 		<canvas id="map" width="500" height="500" style="border:3px solid #ABBAFF;">This ain't supported by your browser.</canvas>
 		<script>
+		function draw() {
 			var c = document.getElementById("map");
 			var ctx = c.getContext("2d");
-			ctx.fillStyle = "#F4F4F4"; //Dunkelgrau f�llen;
+			ctx.fillStyle = "#F4F4F4"; //Dunkelgrau füllen;
 			ctx.strokeStyle = "#0040FF"; //Straßen sind blau;
 			ctx.fillRect(0,0,500,500); //Füllen vom Canvas;
 			
 			for (var stra=0; stra < vectors.length; stra++)
 			{
 				ctx.moveTo( Math.round(vectors[stra][0][0]) , Math.round(vectors[stra][0][1]) );
-				//Der "drawer" setzt am ersten Punkt der Strasse Nr. 'stra' an;
+				//Der "drawer" setzt am ersten Punkt der Straße Nr. 'stra' an;
 				for (var vec=1; vec < vectors[stra].length; vec++)
 				{
 					vectors[stra][vec][0] -= leftUpperLongitude;
 					vectors[stra][vec][1] -= leftUpperLatitude;
 						// Jeder Vektor wird relativ zur oberen, linken Ecke angegeben;
-					var Xmax = rightDownLongitude - leftUpperLongitude;
+					var Xmax = rightDownLongitude - leftUpperLongitude;					
 					var Ymax = rightDownLatitude - leftUpperLatitude;
 						// Die Breite/Höhe der Map wird berechnet;
 					vectors[stra][vec][0] /= (Xmax/500);
 					vectors[stra][vec][1] /= (Ymax/500);
 						//Die relative Position des Vektors im Canvas wird berechnet;
 					ctx.lineTo( Math.round(vectors[stra][vec][0]) , Math.round(vectors[stra][vec][1]) );
-						//Der "drawer" bewegt sich zum n�chsten Punkt der Straße;
+						//Der "drawer" bewegt sich zum nächsten Punkt der Straße;
 				}
 			}
 			ctx.stroke();
+		}
 		</script>
 	</body>
+</html>

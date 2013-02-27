@@ -3,13 +3,12 @@ var leftUpperLongitude = 8.697115; //Laengengrad X
 var leftUpperLatitude = 49.412041; //Breitengrad Y
 var rightDownLatitude = 49.410628; //Breitengrad Y
 var rightDownLongitude = 8.7013; //Laengengrad X
-var vectors = Array();
+vectors = Array();
 
 $(document).ready(function() {
 	// inhalt von "data.txt" einlesen/laden
     // inhalt der datei steht dann in "msg"
-    $("#container").load(inputFile, function(msg)
-    {
+    $("#container").load(inputFile, function(msg) {
         // den inhalt/rückgabewert nach zeilenumbrüchen aufteilen
         // und in ein array ablegen
         var tmpArray = msg.split("\n");
@@ -23,5 +22,6 @@ $(document).ready(function() {
         		vectors[i][j] = tmpCoords[j].split(" ");
         	}            
         }
+        draw();
     });
 });
