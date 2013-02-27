@@ -13,19 +13,17 @@
 			</script>
 		<!-- Ende -->
 		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-		<script src="func.js"></script>
+		<script type="text/javascript" src="func.js"></script>
 	</head>
 	<body>
 		<canvas id="map" width="1280" height="1024" style="border:3px solid #ABBAFF;">This ain't supported by your browser.</canvas>
+		<p id="demo"></p>
 		<script>
 			$(document).ready(function()
 			{
-				alert("I'm ready!");
 				resetCanvas("map");
-				alert("I'm ready, too!");
-				var vect;
-				vect = getFromTxt("/inputs.txt");
-				//alert(vect[2][2][1]);
+				var vect = getFromText("inputs.txt");
+				alert(vect[2][2][1]);
 				drawStreets("map", vect);
 			});
 		</script>
