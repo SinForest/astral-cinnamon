@@ -1,7 +1,29 @@
+			// function getFromText(input)
+			// {
+				// var vectors = new Array();
+				// $.get(input, function(data){
+					// var tmp_1 = data.split("/n");
+					// for(var i=0; i < tmp_1.length(); i++)
+					// {
+						// vectors[i] = new Array();
+						// var tmp_2 = tmp_1[i].split(",");
+						// for(var j=0; j < tmp_2.length(); j++)
+						// {
+							// vectors[i][j] = tmp_2[j].split(" ");
+							// alert(vectors[i][j][1]);
+						// }
+					// }
+				// });
+				// return vectors;
+			// }
+			
 			function getFromText(input)
 			{
 				var vectors = new Array();
-				$.get(input, function(data){
+				$.ajax({
+					url: input,
+					dataType: text,
+					complete: function(data){
 					var tmp_1 = data.split("/n");
 					for(var i=0; i < tmp_1.length(); i++)
 					{
@@ -13,7 +35,7 @@
 							alert(vectors[i][j][1]);
 						}
 					}
-				});
+				}});
 				return vectors;
 			}
 			
