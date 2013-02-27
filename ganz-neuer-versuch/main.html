@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Testing </title>
+		<!-- Globale Variablen -->
+			<script>
+			var canW = 1280
+			var canH = 1024
+			var leftUpperLongitude = 8.659085; //Laengengrad X
+			var leftUpperLatitude = 49.434311; //Breitengrad Y
+			var rightDownLatitude = 49.390474; //Breitengrad Y
+			var rightDownLongitude = 8.712819; //Laengengrad X
+			</script>
+		<!-- Ende -->
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script src="func.js"></script>
+	</head>
+	<body>
+		<canvas id="map" width="1280" height="1024" style="border:3px solid #ABBAFF;">This ain't supported by your browser.</canvas>
+		<script>
+			$(document).ready(function()
+			{
+				alert("I'm ready!");
+				resetCanvas("map");
+				alert("I'm ready, too!");
+				var vect;
+				vect = getFromTxt("/inputs.txt");
+				//alert(vect[2][2][1]);
+				drawStreets("map", vect);
+			});
+		</script>
+	</body>
+</html>

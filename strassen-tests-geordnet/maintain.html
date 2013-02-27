@@ -1,3 +1,10 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--ThisIsAComment-->
+		<title>Canvas-Test</title>
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		<script>
 function catchFromTxt(input)
 {
 	var vectors = new Array();
@@ -57,3 +64,22 @@ function draw(map, vectors)
 			}
 			ctx.stroke();
 }
+			var leftUpperLongitude = 8.659085; //Laengengrad X
+			var leftUpperLatitude = 49.434311; //Breitengrad Y
+			var rightDownLatitude = 49.390474; //Breitengrad Y
+			var rightDownLongitude = 8.712819; //Laengengrad X
+			$(document).ready(function()
+			{
+				var vec;
+				vec = catchFromTxt("inputs.txt");
+				alert(vec[2][2][1]);
+				draw("map", vec);
+			});
+		</script>
+	</head>
+	<body>
+		<canvas id="map" width="1280" height="1024" style="border:3px solid #ABBAFF;">This ain't supported by your browser.</canvas>
+		<div id="list"></div>
+		<div id="container"></div>
+	</body>
+</html>
