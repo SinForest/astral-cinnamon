@@ -1,7 +1,7 @@
 var inputFile = "inputs.txt";
 var leftUpperLongitude = 8.659085; //Laengengrad X
-var leftUpperLatitude = 49.390474; //Breitengrad Y
-var rightDownLatitude = 49.434311; //Breitengrad Y
+var leftUpperLatitude = 49.434311; //Breitengrad Y
+var rightDownLatitude = 49.390474; //Breitengrad Y
 var rightDownLongitude = 8.712819; //Laengengrad X
 vectors = Array();
 
