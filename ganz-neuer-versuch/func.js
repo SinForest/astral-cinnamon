@@ -22,7 +22,7 @@
 				var vectors = new Array();
 				$.ajax({
 					url: input,
-					dataType: text,
+					dataType: "text",
 					complete: function(data){
 					var tmp_1 = data.split("/n");
 					for(var i=0; i < tmp_1.length(); i++)
