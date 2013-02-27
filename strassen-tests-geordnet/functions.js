@@ -1,11 +1,11 @@
-function catchFromTxt(input, container)
+function catchFromTxt(input)
 {
-	$("#" + container).load(input, function(msg)
+	$("#container").load(input, function(msg)
 	{
         // den inhalt/rückgabewert nach zeilenumbrüchen aufteilen
         // und in ein array ablegen
         var tmpArray = msg.split("\n");
-        
+        var vectors = new Array();
         // array durchlaufen
         for(var i=0;i<tmpArray.length;i++)
         {
