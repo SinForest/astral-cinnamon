@@ -35,7 +35,6 @@
 							for(var j=0; j < tmp_2.length; j++)
 							{
 								vectors[i][j] = tmp_2[j].split(" ");
-								//alert("("+i+","+j+"): "+vectors[i][j][0] + ":" + vectors[i][j][1]);
 							}
 						}						
 					}
@@ -59,19 +58,16 @@
 				for (var stra=0; stra < i_vectors.length; stra++)
 				{
 					for (var vec=0; vec < i_vectors[stra].length; vec++)
-					{
-						/*alert(i_vectors[stra][vec][1]);
-						alert(leftUpperLatitude);
-						alert((Ymax/canH));*/						
-						i_vectors[stra][vec][0] = (i_vectors[stra][vec][0] - leftUpperLongitude) / (Xmax/canW);
-						i_vectors[stra][vec][1] = (i_vectors[stra][vec][1] - leftUpperLatitude) / (Ymax/canH);
+					{					
+						var XKord = (i_vectors[stra][vec][0] - leftUpperLongitude) / (Xmax/canW);
+						var YKord = (i_vectors[stra][vec][1] - leftUpperLatitude) / (Ymax/canH);
 						if(vec == 0)
 						{
-							ctx.moveTo( Math.round(i_vectors[stra][0][0]) , Math.round(i_vectors[stra][0][1]) );
+							ctx.moveTo( XKord , YKord );
 						}
 						else
 						{
-							ctx.lineTo( Math.round(i_vectors[stra][vec][0]) , Math.round(i_vectors[stra][vec][1]) );
+							ctx.lineTo( XKord , YKord );
 						}
 					}
 				}
