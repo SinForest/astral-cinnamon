@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<title> Testing </title>
-		<!-- Globale Variablen -->
-			<script>
-			//GET Variable auf dem Server
-			var leftUpperLongitude 	= 8.691491;	//Laengengrad X x0	//Bsp Aufruf: http://testing.thesinforest.eu/crawl.php?x0=8.691491&y0=49.413654&x1=8.703766&y1=49.408404
-			var leftUpperLatitude  	= 49.413654;//Breitengrad Y	y0	
-			var rightBottomLongitude= 8.703766; //Laengengrad X	x1
-			var rightBottomLatitude = 49.408404;//Breitengrad Y	y1
-			</script>
-		<!-- Ende -->
-		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-		<script type="text/javascript" src="func.js"></script>
-	</head>
-	<body>
-		<canvas id="map" width="1" height="1" style="border:3px solid #ABBAFF;">This ain't supported by your browser.</canvas>
-		<p id="demo"></p>
-		<script>
-			$(document).ready(function()
-			{
-				var canW = window.innerWidth;
-				var canH = window.innerHeight;
-				var map = document.getElementById("map");
-				map.width = canW;
-				map.height = canH;
-				resetCanvas(map);
-				var vect = getFromText("inputs.txt");
-				//alert(vect.length);
-				//alert(vect[0][0][0]);
-				drawStreets(map, vect);
-				drawCircle(map, (rightBottomLongitude+leftUpperLongitude)/2,  (rightBottomLatitude+leftUpperLatitude)/2, 100);
-			});
-		</script>
-	</body>
+        <head>
+                <title> Testing </title>
+                <style type="text/css">body,html{padding:0;margin:0;}</style>
+                <!-- Globale Variablen -->
+                        <script>
+                        																//GET Variable auf dem Server
+                        var leftUpperLongitude  = 8.691491;     //Laengengrad X x0      //Bsp Aufruf: http://testing.thesinforest.eu/crawl.php?x0=8.691491&y0=49.413654&x1=8.703766&y1=49.408404
+                        var leftUpperLatitude   = 49.413654;//Breitengrad Y     y0     
+                        var rightBottomLongitude= 8.703766; //Laengengrad X     x1
+                        var rightBottomLatitude = 49.408404;//Breitengrad Y     y1
+                        //
+                        var watchID;
+                        var geoLoc;
+                        var refreshInterval = 15; //sec
+                        </script>
+                <!-- Ende -->
+                <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+                <script type="text/javascript" src="func.js"></script>
+        </head>
+        <body>
+                <canvas id="map" width="1" height="1" style="margin:0;padding:0;">This ain't supported by your browser.</canvas>
+                <script>
+                        $(document).ready(function()
+                        {
+                                var canW = window.innerWidth;
+                                var canH = window.innerHeight;
+                                var map = document.getElementById("map");
+                                map.width = canW;
+                                map.height = canH;
+                                //Hauptfkt aufrufen und Intervall setzen
+                                //main();
+                                //setInterval(function(){main();}, refreshInterval*1000);
+                                resetCanvas(map);
+                                var vect = getFromText("inputs.txt");                                
+                                drawStreets(map, vect);
+                                drawCircle(map, (rightBottomLongitude+leftUpperLongitude)/2,  (rightBottomLatitude+leftUpperLatitude)/2, 100);
+                        });
+                </script>
+        </body>
 </html>

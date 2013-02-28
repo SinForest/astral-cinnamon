@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<head>
+<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script type="text/javascript">
+var watchID;
+var geoLoc;
+var refreshInterval = 15; //sec
+
+function getLatitude(position) {
+  return position.coords.latitude;  
+}
+
+function getLongitude(position) {
+	return position.coords.longitude;
+}
+
+function x(position) {
+	//console.log(getLatitude(position));
+	console.los(watchID);
+}
+
+function errorHandler(err) {
+  if(err.code == 1) {
+    alert("Error: Access is denied!");
+  }else if( err.code == 2) {
+    alert("Error: Position is unavailable!");
+  }
+}
+function getLocationUpdate(){
+
+   if(navigator.geolocation){
+      // timeout at 60000 milliseconds (60 seconds)
+      var options = {timeout:7500,maximumAge:refreshInterval*900};
+      geoLoc = navigator.geolocation;
+      watchID = geoLoc.watchPosition(x, 
+                                     errorHandler,
+                                     options);
+   }else{
+      alert("Sorry, browser does not support geolocation!");
+   }
+}
+
+$(document).ready(function(){
+	setInterval(function(){getLocationUpdate();}, refreshInterval*1000);
+});
+</script>
+</head>
+<html>
+<body>
+ 
+</body>
+</html>
