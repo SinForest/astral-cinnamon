@@ -63,8 +63,8 @@
 				var Ymax = rightBottomLatitude - leftUpperLatitude;
 				xPos = (xPos - leftUpperLongitude) / (Xmax/canW);
 				yPos = (yPos - leftUpperLatitude) / (Ymax/canH);
-				alert(xPos);
-				alert(yPos);
+				//alert(xPos);
+				//alert(yPos);
 				ctx.beginPath();
 				ctx.arc(xPos,yPos,rad,0,2*Math.PI);
 				ctx.stroke();

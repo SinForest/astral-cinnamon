@@ -4,8 +4,7 @@
 		<title> Testing </title>
 		<!-- Globale Variablen -->
 			<script>
-			var canW = 1280;
-			var canH = 1024;										//GET Variable auf dem Server
+			//GET Variable auf dem Server
 			var leftUpperLongitude 	= 8.691491;	//Laengengrad X x0	//Bsp Aufruf: http://testing.thesinforest.eu/crawl.php?x0=8.691491&y0=49.413654&x1=8.703766&y1=49.408404
 			var leftUpperLatitude  	= 49.413654;//Breitengrad Y	y0	
 			var rightBottomLongitude= 8.703766; //Laengengrad X	x1
@@ -16,12 +15,16 @@
 		<script type="text/javascript" src="func.js"></script>
 	</head>
 	<body>
-		<canvas id="map" width="1280" height="1024" style="border:3px solid #ABBAFF;">This ain't supported by your browser.</canvas>
+		<canvas id="map" width="1" height="1" style="border:3px solid #ABBAFF;">This ain't supported by your browser.</canvas>
 		<p id="demo"></p>
 		<script>
 			$(document).ready(function()
 			{
+				var canW = window.innerWidth;
+				var canH = window.innerHeight;
 				var map = document.getElementById("map");
+				map.width = canW;
+				map.height = canH;
 				resetCanvas(map);
 				var vect = getFromText("inputs.txt");
 				//alert(vect.length);
