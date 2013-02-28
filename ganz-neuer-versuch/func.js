@@ -28,6 +28,9 @@
 						var tmp_1 = data.split("\n");
 						for(var i=0; i < tmp_1.length; i++) {
 							vectors[i] = new Array();							
+							//LINESTRING( ) entfernen
+							tmp_1[i] = tmp_1[i].substring(11, tmp_1[i].indexOf(")"));
+							
 							var tmp_2 = tmp_1[i].split(",");							
 							for(var j=0; j < tmp_2.length; j++)
 							{
@@ -51,15 +54,18 @@
 			{
 				var ctx = i_canvas.getContext("2d");
 				ctx.strokeStyle = "#0040FF"; //Straßen sind blau;
-				var Xmax = rightDownLongitude - leftUpperLongitude;					
-				var Ymax = rightDownLatitude - leftUpperLatitude;
+				var Xmax = rightBottomLongitude - leftUpperLongitude;					
+				var Ymax = rightBottomLatitude - leftUpperLatitude;
 				for (var stra=0; stra < i_vectors.length; stra++)
 				{
 					for (var vec=0; vec < i_vectors[stra].length; vec++)
 					{
+						/*alert(i_vectors[stra][vec][1]);
+						alert(leftUpperLatitude);
+						alert((Ymax/canH));*/						
 						i_vectors[stra][vec][0] = (i_vectors[stra][vec][0] - leftUpperLongitude) / (Xmax/canW);
 						i_vectors[stra][vec][1] = (i_vectors[stra][vec][1] - leftUpperLatitude) / (Ymax/canH);
-						if(vec = 0)
+						if(vec == 0)
 						{
 							ctx.moveTo( Math.round(i_vectors[stra][0][0]) , Math.round(i_vectors[stra][0][1]) );
 						}
