@@ -1,22 +1,3 @@
-			// function getFromText(input)
-			// {
-				// var vectors = new Array();
-				// $.get(input, function(data){
-					// var tmp_1 = data.split("/n");
-					// for(var i=0; i < tmp_1.length(); i++)
-					// {
-						// vectors[i] = new Array();
-						// var tmp_2 = tmp_1[i].split(",");
-						// for(var j=0; j < tmp_2.length(); j++)
-						// {
-							// vectors[i][j] = tmp_2[j].split(" ");
-							// alert(vectors[i][j][1]);
-						// }
-					// }
-				// });
-				// return vectors;
-			// }
-			
 			function getFromText(input)
 			{
 				var vectors = new Array();
@@ -71,5 +52,20 @@
 						}
 					}
 				}
+				ctx.stroke();
+			}
+			
+			function drawCircle(i_canvas, xPos, yPos, rad)
+			{
+				var ctx = i_canvas.getContext("2d");
+				ctx.strokeStyle = "#FF1020"; //Kreis wird rot;
+				var Xmax = rightBottomLongitude - leftUpperLongitude;					
+				var Ymax = rightBottomLatitude - leftUpperLatitude;
+				xPos = (xPos - leftUpperLongitude) / (Xmax/canW);
+				yPos = (yPos - leftUpperLatitude) / (Ymax/canH);
+				alert(xPos);
+				alert(yPos);
+				ctx.beginPath();
+				ctx.arc(xPos,yPos,rad,0,2*Math.PI);
 				ctx.stroke();
 			}
