@@ -6,7 +6,7 @@
 			<script>
 			var canW = 1280
 			var canH = 1024										//GET Variable auf dem Server
-			var leftUpperLongitude = 8.659085; //Laengengrad X 	x0		//Bsp Aufruf: http://testing.thesinforest.eu/test.php?x0=8.659085&y0=49.434311&x1=8.712819&y1=49.390474
+			var leftUpperLongitude = 8.659085; //Laengengrad X 	x0		//Bsp Aufruf: http://testing.thesinforest.eu/crawl.php?x0=8.659085&y0=49.434311&x1=8.712819&y1=49.390474
 			var leftUpperLatitude = 49.434311; //Breitengrad Y	y0	
 			var rightDownLongitude = 8.712819; //Laengengrad X	x1
 			var rightDownLatitude = 49.390474; //Breitengrad Y	y1
@@ -21,10 +21,11 @@
 		<script>
 			$(document).ready(function()
 			{
-				var map = $("#map");
+				var map = document.getElementById("map");
 				resetCanvas(map);
 				var vect = getFromText("inputs.txt");
-				alert(vect[2][2][1]);
+				//alert(vect.length);
+				//alert(vect[0][0][0]);
 				drawStreets(map, vect);
 			});
 		</script>
