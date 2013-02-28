@@ -80,9 +80,15 @@
     		return position.coords.longitude;
     	}
 
+    	//Funktion die alles übergeben bekommt
     	function x(position) {
-    		//console.log(getLatitude(position));
-    		console.los(watchID);
+    		resetCanvas(map);
+            vect = getFromText("crawl.php?x0="+(getLongitude(position) - distanceX/2)+"&y0="+(getLatitude(position) - distanceX/2)+"&x1="+(getLongitude(position) + distanceX/2)+"&y1="+(getLatitude(position) + distanceX/2));
+    		//vect = getFromText("inputs.txt");
+            console.log("crawl.php?x0="+(getLongitude(position) - distanceX/2)+"&y0="+(getLatitude(position) - distanceX/2)+"&x1="+(getLongitude(position) + distanceX/2)+"&y1="+(getLatitude(position) + distanceX/2));
+            console.log(vect);
+            drawStreets(map, vect);
+            //drawCircle(map, (rightBottomLongitude+leftUpperLongitude)/2,  (rightBottomLatitude+leftUpperLatitude)/2, 100);
     	}
 
     	function errorHandler(err) {
@@ -93,7 +99,6 @@
     	  }
     	}
     	function main(){
-
     	   if(navigator.geolocation){
     	      // timeout at 60000 milliseconds (60 seconds)
     	      var options = {timeout:7500,maximumAge:refreshInterval*900};
