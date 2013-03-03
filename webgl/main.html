@@ -102,24 +102,24 @@
 				var Ymax = rightBottomLatitude - leftUpperLatitude;
 				for (var stra=0; stra < vect.length; stra++)
 				{
-					//vect[stra][0][0] -= leftUpperLongitude;
-					//vect[stra][0][1] -= leftUpperLatitude;
-						// Jeder Vektor wird relativ zur oberen, linken Ecke angegeben;
-					//vect[stra][0][0] /= (Xmax/window.innerWidth);
-					//vect[stra][0][1] /= (Ymax/window.innerHeight);
+					vect[stra][0][0] -= leftUpperLongitude;
+					vect[stra][0][1] -= leftUpperLatitude;
+					vect[stra][0][0] /= (Xmax/window.innerWidth);
+					vect[stra][0][1] /= (Ymax/window.innerHeight);
 					for (var vec=0; vec < vect[stra].length-1; vec++)
 					{
-						vect[stra][vec][0] -= leftUpperLongitude;
-						vect[stra][vec][1] -= leftUpperLatitude;
+						vect[stra][vec+1][0] -= leftUpperLongitude;
+						vect[stra][vec+1][1] -= leftUpperLatitude;
 							// Jeder Vektor wird relativ zur oberen, linken Ecke angegeben;
-						vect[stra][vec][0] /= (Xmax/window.innerWidth);
-						vect[stra][vec][1] /= (Ymax/window.innerHeight);
+						vect[stra][vec+1][0] /= (Xmax/window.innerWidth);
+						vect[stra][vec+1][1] /= (Ymax/window.innerHeight);
+						//alert(vect[stra][vec][0]+"\n"+vect[stra][vec][1]+"\n"+vect[stra][vec+1][0]+"\n"+vect[stra][vec+1][1]);
 						
 						geometry.vertices.push( new THREE.Vector3(vect[stra][vec][0], vect[stra][vec][1], 0 ) ); //Startwert
-        				geometry.vertices.push( new THREE.Vector3(vect[stra][vec+1][0], vect[stra][vec+1][1], 0 ) ); //Endwert
-        				//alert(vect[stra][vec+1][0]);
+        				geometry.vertices.push( new THREE.Vector3(vect[stra][vec+1][0], vect[stra][vec+1][1], 0 ) ); //Endwert	
 					}
 				}
+				
 				
 				var material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 1,linewidth: 2 } ); //Eigenschaften der Vektoren
 
