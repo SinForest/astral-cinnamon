@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Mittelpunkt User</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<?xml version="1.0" encoding="utf-8"?>
+		<WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/webview"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		/>
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #f0f0f0;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="three.min.js"></script>
+		<script src="func.js"></script>
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		
+		<script>
+			//Festwerte:
+			var stepLongitude = 0.02;	//X Breite eines zu speichernden Rechtecks 
+			var stepLatitude  = 0.01;	//Y Höhe eines zu speichernden Rechtecks			
+			var loadRectanglesHorizontal = 1;	// Anzahl der Rechtecke die jeweils links und rechts vom aktuellen Rechteck geladen werden. Integer!!! 
+			var loadRectanglesVertical   = 1;	// Anzahl der Rechtecke die jeweils oben  und unten  vom aktuellen Rechteck geladen werden. Integer!!! 
+			
+			
+			
+			//Variable Werte:			
+			var buildingRectangles = new Array(); 	//Container der alle immoment sichtbaren Elemente enthält 	
+			//beim Initialisieren festlegen. Aktuelle Position des Users
+			var userPositionLongitude = 8.698735;	//Laengengrad X 
+			var userPositionLatitude  = 49.410638;	//Breitengrad Y  
+			
+			//Aktionen, die beim Verändern der aktuellen GPS Koordinate ausgeführt werden soll. Übergeben werden die neuen Koordinaten des Users 
+			function onUserMove(x,y) {
+				//Überprüfen, ob wirklich Position geändert wurde 
+				if ( (userPositionLongitude != x) || (userPositionLatitude != y) ) {
+					//GPS Koordinaten global aktualisieren 
+					userPositionLongitude = x;
+					userPositionLatitude = y;
+					//Karte aktualsieren
+					actualizeMap();
+				}
+			}
+			
+			function actualizeMap() {
+				//Prüfen ob noch innerhalb eines vorgegeben Rechtecks 					
+				var tmp_x0 = stepLongitude * Math.floor(1/stepLongitude * userPositionLongitude); 	//X Wert links unten 
+				var tmp_y0 = stepLatitude  * Math.floor(1/stepLatitude  * userPositionLatitude);  	//Y Wert links unten 
+				var tmp_x1 = tmp_x0 + stepLongitude;												//X Wert rechts oben 
+				var tmp_y1 = tmp_y0 + stepLatitude;													//Y Wert rechts oben 
+				if ((tmp_x0 < userPositionLongitude) && (tmp_y0 < userPositionLatitude) && (tmp_x1 > userPositionLongitude) && (tmp_y1 > userPositionLatitude) ) {
+					//falls ja, muss nichts neu geladen werden, nur die Karte verschoben und neu gerendert. 					
+					
+				} else {
+					//wenn nicht mehr im selben Rechteck müssen weitere Rechtecke geladen werden: 
+					//da immer die selbe Anzahl an Container-Rechtecken vorhanden ist (siehe Festwerte), genügt eine schleife zum suchen und ersetzen 
+					for (var i=0 ; i<2*loadRectanglesHorizontal +1 ; i++) {
+						for (var j=0 ; j<2*loadRectanglesVertical +1 ; j++) {
+							var tmpX_
+							
+						}
+					}
+					addVectorRectangle();
+					removeVectorRectangle();
+				}
+			}
+			
+			//Funktion zum hinzufügen eines Rechtsecks 
+			function addVectorRectangle(id, tmpVectorArray) {
+				
+			}
+			
+			//Funktion zum löschen eines Rechtsecks 
+			function removeVectorRectangle(id, tmpVectorArray) {
+				
+			}
+
+			
+			var leftUpperLongitude  = 0; //Laengengrad X	x0 
+	        var leftUpperLatitude   = 0; //Breitengrad Y	y0 
+	        var rightBottomLongitude  = 0; //Laengengrad X	x1 
+	        var rightBottomLatitude   = 0; //Breitengrad Y	y1 	        
+	        
+	        
+	         
+	        
+	        var container;
+			var camera, scene, renderer;
+			var zoom = 2.5; //mindestens 2
+			
+			var buildings;
+			
+			init();
+			animate();
+
+
+		</script>
+
+	</body>
+</html>
