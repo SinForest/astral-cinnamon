@@ -56,56 +56,50 @@
 				}
 			}
 			
-			//FUnktion bekommt neue Daten 
+			//Funktion bekommt neue Daten 
 			function actualizeMap(newPositionX, newPositionY) {
 				//Prüfen ob noch innerhalb eines vorgegeben Rechtecks 					
-				var tmp_x0 = stepLongitude * Math.floor(1/stepLongitude * newPositionX); 	//X Wert links unten 
-				var tmp_y0 = stepLatitude  * Math.floor(1/stepLatitude  * newPositionY);  	//Y Wert links unten 
-				var tmp_x1 = tmp_x0 + stepLongitude;												//X Wert rechts oben 
-				var tmp_y1 = tmp_y0 + stepLatitude;													//Y Wert rechts oben 
-				if ((tmp_x0 < userPositionLongitude) && (tmp_y0 < userPositionLatitude) && (tmp_x1 > userPositionLongitude) && (tmp_y1 > userPositionLatitude) ) {
+				var tmp_x0 = stepLongitude * Math.floor(1/stepLongitude * userPositionLongitude); 	//alter X Wert links unten (Position noch nicht global in userPosition geschrieben) 
+				var tmp_y0 = stepLatitude  * Math.floor(1/stepLatitude  * userPositionLatitude);  	//alter Y Wert links unten 
+				var tmp_x1 = tmp_x0 + stepLongitude;												//alter X Wert rechts oben 
+				var tmp_y1 = tmp_y0 + stepLatitude;													//alter Y Wert rechts oben 
+				/*if ((tmp_x0 < newPositionX) && (tmp_y0 < newPositionY) && (tmp_x1 > newPositionX) && (tmp_y1 > newPositionY) ) {
 					//falls ja, muss nichts neu geladen werden, nur die Karte verschoben und neu gerendert. 					
 					
-				} else {
+				/} else {*/
+					
+					
 					//wenn nicht mehr im selben Rechteck müssen weitere Rechtecke geladen werden:
-					if () {
-						//nach rechte obere Ecke 
+					if((newPositionX > tmp_x1) && (newPositionY > tmp_y1)) {
+						//nach rechts-oben 
 						
-					} else if () {
-						//nach linke obere Ecke 
+					}
+					else if((newPositionX < tmp_x0) && (newPositionY < tmp_y0)) {
+						//nach links-unten 
 						
-					} else if () {
-						//nach rechte untere Ecke 
+					}
+					else if((newPositionX < tmp_x0) && (newPositionY > tmp_y1)) {
+						//nach links-oben 
 						
-					} else if () {
-						//nach linke untere Ecke 
-						
-					} else if (tmp_x1 < userPositionLongitude) {					
+					}
+					else if((newPositionX > tmp_x1) && (newPositionY < tmp_y0)) {
+						//nach rechts-unten
+					} else if (tmp_x1 < newPositionX) {					
 						//nach rechts 
 						
-					} else if (tmp_x0 > userPositionLongitude) {
+					} else if (tmp_x0 > newPositionX) {
 						//nach links 
 						
-					} else if () {
+					} else if (tmp_y0 < newPositionY) {
 						//nach oben 
 						
-					} else if () {
+					} else if (tmp_y0 > newPositionY) {
 						//nach unten 
 						
 					}
 					
 					
-					 
-					//da immer die selbe Anzahl an Container-Rechtecken vorhanden ist (siehe Festwerte), genügt eine schleife zum suchen und ersetzen 					
-					
-					
-					
-					for (var i=0 ; i<( 2*loadRectanglesHorizontal +1)*(2*loadRectanglesVertical +1)  ; i++) {
-						
-					}
-					addVectorRectangle();
-					removeVectorRectangle();
-				}
+				//} 
 			}
 			
 			//Funktion zum hinzufügen eines Rechtsecks 
