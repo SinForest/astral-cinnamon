@@ -37,10 +37,17 @@
 			
 			
 			//Variable Werte:			
-			var buildingRectangles = new Array(); 	//Container der alle immoment sichtbaren Elemente enthält 
-			var buildingRectanglesIndexString new Array();	//Der Wert vom Index i dieses Arrays gibt an, welchen ... 
-															//Bsp: statt buildingsRectangels[i] dann buildingsRectangels[buildingRectanglesIndexString[i]]
-			//beim Initialisieren festlegen. Aktuelle Position des Users 
+			var buildingRectangles 				= []; 	//Container der alle immoment sichtbaren Elemente enthält 
+			var buildingRectanglesIndexArray 	= [];	//Der Wert vom Index i dieses Arrays gibt an, welchen ... 
+			//buildingRectangles ist ein zweidimensionales Array, wobei [0][0] das mittlere Rechteck ist, [-1][1] links oben usw. 
+			for(var i= loadRectanglesVertical; i >= -loadRectanglesVertical; i--) {
+				buildingRectangles[i] = [];
+				for(var j= - loadRectanglesVertical; j <= loadRectanglesVertical; j++) {
+					buildingRectangles[i][j] = [];
+				}
+			}
+			
+			//beim Initialisieren festlegen!!!!! Aktuelle Position des Users 
 			var userPositionLongitude = 8.698735;	//Laengengrad X 
 			var userPositionLatitude  = 49.410638;	//Breitengrad Y  
 			
@@ -86,6 +93,15 @@
 						//nach rechts-unten
 					} else if (tmp_x1 < newPositionX) {					
 						//nach rechts 
+						/*buildingRectanglesIndexArray.length = 0; //IndexString zurücksetzen 
+						for(var i=1; i<=buildingRectangles.length; i++) {
+							//erst einmal alle Indizes um eins nach links verschieben
+							buildingRectanglesIndexArray[i-1] = buildingRectanglesIndexArray[i];
+						}
+						for(var i=0; i<buildingRectangles.length; i+=2*loadRectanglesHorizontal+1) {
+							buildingRectangles[i] 			= getVectorRectangle(tmp_x1, tmp_y1, tmp_x1+, tmp_y1+);
+							buildingRectanglesIndexArray[i] = i+1; 
+						}*/
 						
 					} else if (tmp_x0 > newPositionX) {
 						//nach links 
