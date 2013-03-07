@@ -37,8 +37,10 @@
 			
 			
 			//Variable Werte:			
-			var buildingRectangles = new Array(); 	//Container der alle immoment sichtbaren Elemente enthält 	
-			//beim Initialisieren festlegen. Aktuelle Position des Users
+			var buildingRectangles = new Array(); 	//Container der alle immoment sichtbaren Elemente enthält 
+			var buildingRectanglesIndexString new Array();	//Der Wert vom Index i dieses Arrays gibt an, welchen ... 
+															//Bsp: statt buildingsRectangels[i] dann buildingsRectangels[buildingRectanglesIndexString[i]]
+			//beim Initialisieren festlegen. Aktuelle Position des Users 
 			var userPositionLongitude = 8.698735;	//Laengengrad X 
 			var userPositionLatitude  = 49.410638;	//Breitengrad Y  
 			
@@ -46,31 +48,60 @@
 			function onUserMove(x,y) {
 				//Überprüfen, ob wirklich Position geändert wurde 
 				if ( (userPositionLongitude != x) || (userPositionLatitude != y) ) {
+					//Karte aktualsieren, neue Werte übergeben 
+					actualizeMap(x,y);
 					//GPS Koordinaten global aktualisieren 
 					userPositionLongitude = x;
-					userPositionLatitude = y;
-					//Karte aktualsieren
-					actualizeMap();
+					userPositionLatitude = y;					
 				}
 			}
 			
-			function actualizeMap() {
+			//FUnktion bekommt neue Daten 
+			function actualizeMap(newPositionX, newPositionY) {
 				//Prüfen ob noch innerhalb eines vorgegeben Rechtecks 					
-				var tmp_x0 = stepLongitude * Math.floor(1/stepLongitude * userPositionLongitude); 	//X Wert links unten 
-				var tmp_y0 = stepLatitude  * Math.floor(1/stepLatitude  * userPositionLatitude);  	//Y Wert links unten 
+				var tmp_x0 = stepLongitude * Math.floor(1/stepLongitude * newPositionX); 	//X Wert links unten 
+				var tmp_y0 = stepLatitude  * Math.floor(1/stepLatitude  * newPositionY);  	//Y Wert links unten 
 				var tmp_x1 = tmp_x0 + stepLongitude;												//X Wert rechts oben 
 				var tmp_y1 = tmp_y0 + stepLatitude;													//Y Wert rechts oben 
 				if ((tmp_x0 < userPositionLongitude) && (tmp_y0 < userPositionLatitude) && (tmp_x1 > userPositionLongitude) && (tmp_y1 > userPositionLatitude) ) {
 					//falls ja, muss nichts neu geladen werden, nur die Karte verschoben und neu gerendert. 					
 					
 				} else {
-					//wenn nicht mehr im selben Rechteck müssen weitere Rechtecke geladen werden: 
-					//da immer die selbe Anzahl an Container-Rechtecken vorhanden ist (siehe Festwerte), genügt eine schleife zum suchen und ersetzen 
-					for (var i=0 ; i<2*loadRectanglesHorizontal +1 ; i++) {
-						for (var j=0 ; j<2*loadRectanglesVertical +1 ; j++) {
-							var tmpX_
-							
-						}
+					//wenn nicht mehr im selben Rechteck müssen weitere Rechtecke geladen werden:
+					if () {
+						//nach rechte obere Ecke 
+						
+					} else if () {
+						//nach linke obere Ecke 
+						
+					} else if () {
+						//nach rechte untere Ecke 
+						
+					} else if () {
+						//nach linke untere Ecke 
+						
+					} else if (tmp_x1 < userPositionLongitude) {					
+						//nach rechts 
+						
+					} else if (tmp_x0 > userPositionLongitude) {
+						//nach links 
+						
+					} else if () {
+						//nach oben 
+						
+					} else if () {
+						//nach unten 
+						
+					}
+					
+					
+					 
+					//da immer die selbe Anzahl an Container-Rechtecken vorhanden ist (siehe Festwerte), genügt eine schleife zum suchen und ersetzen 					
+					
+					
+					
+					for (var i=0 ; i<( 2*loadRectanglesHorizontal +1)*(2*loadRectanglesVertical +1)  ; i++) {
+						
 					}
 					addVectorRectangle();
 					removeVectorRectangle();
