@@ -1,14 +1,23 @@
 	//Alle Vektoren innerhalb von dem Rechteck (x0,y0),(x1,y1) aus dem Lokalspeicher laden bzw. von Server holen und lokal speichern. 
-	function getVectorRectangle(x0, y0, x1, y1) {				
+	function getVectorRectangle(x0, y0, x1, y1) {
+		//da verdammte scheiß Rundungsfehler in JS entstehen, weil es nicht mit FLoat Zahlen umgehen kann... runden!!!
+		x0 = Math.round(x0*1000)/1000;
+		y0 = Math.round(y0*1000)/1000;
+		x1 = Math.round(x1*1000)/1000;
+		y1 = Math.round(y1*1000)/1000;
+		console.log('('+x0+','+y0+'),('+x1+','+y1+')');
 		if (localStorage['('+x0+','+y0+'),('+x1+','+y1+')'] != undefined) {
 			//Rechteck-Ausschnitt der Vektoren vorhanden.
+			//console.log("Ausgabe: "+localStorage['('+x0+','+y0+'),('+x1+','+y1+')']);
 			return JSON.parse(localStorage['('+x0+','+y0+'),('+x1+','+y1+')']);
+			//return (localStorage['('+x0+','+y0+'),('+x1+','+y1+')']);
 		} else {
 			//Abfrage beim Server mittels Hilfsfunktion, die alle Vektoren in einem Array zurückgibt
 			var tmpVectorArray = getFromText("crawl.php?x0="+x0+"&y0="+y0+"&x1="+x1+"&y1="+y1);
 			//Speichern in localStorage 
 			localStorage['('+x0+','+y0+'),('+x1+','+y1+')'] = JSON.stringify(tmpVectorArray); 
 			//Zurückgeben 
+			console.log("ACHTUNG SERVERABFRAGE");
 			return tmpVectorArray;
 		}
 		

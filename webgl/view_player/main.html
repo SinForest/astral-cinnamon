@@ -38,11 +38,11 @@
 			
 			//Variable Werte:			
 			var buildingRectangles 				= []; 	//Container der alle immoment sichtbaren Elemente enthält 
-			var buildingRectanglesIndexArray 	= [];	//Der Wert vom Index i dieses Arrays gibt an, welchen ... 
+			var buildingRectanglesIndexArray 	= [];	//Der Wert vom Index i dieses Arrays gibt an, welchen ...  
 			//buildingRectangles ist ein zweidimensionales Array, wobei [0][0] das mittlere Rechteck ist, [-1][1] links oben usw. 
-			for(var i= loadRectanglesVertical; i >= -loadRectanglesVertical; i--) {
+			for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {							
 				buildingRectangles[i] = [];
-				for(var j= - loadRectanglesVertical; j <= loadRectanglesVertical; j++) {
+				for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {
 					buildingRectangles[i][j] = [];
 				}
 			}
@@ -66,19 +66,20 @@
 			//Funktion bekommt neue Daten 
 			function actualizeMap(newPositionX, newPositionY) {
 				//Prüfen ob noch innerhalb eines vorgegeben Rechtecks 					
-				var tmp_x0 = stepLongitude * Math.floor(1/stepLongitude * userPositionLongitude); 	//alter X Wert links unten (Position noch nicht global in userPosition geschrieben) 
-				var tmp_y0 = stepLatitude  * Math.floor(1/stepLatitude  * userPositionLatitude);  	//alter Y Wert links unten 
-				var tmp_x1 = tmp_x0 + stepLongitude;												//alter X Wert rechts oben 
-				var tmp_y1 = tmp_y0 + stepLatitude;													//alter Y Wert rechts oben 
+				var tmp_x0 = Math.floor(1/stepLongitude * userPositionLongitude)/ (1/stepLongitude);//alter X Wert links unten (Position noch nicht global in userPosition geschrieben) 
+				var tmp_y0 = Math.floor(1/stepLatitude  * userPositionLatitude) / (1/stepLatitude);	//alter Y Wert links unten 
+				var tmp_x1 = Math.round((tmp_x0 + stepLongitude)*1000)/1000;						//alter X Wert rechts oben 
+				var tmp_y1 = Math.round((tmp_y0 + stepLatitude)*1000)/1000;							//alter Y Wert rechts oben 
 				/*if ((tmp_x0 < newPositionX) && (tmp_y0 < newPositionY) && (tmp_x1 > newPositionX) && (tmp_y1 > newPositionY) ) {
 					//falls ja, muss nichts neu geladen werden, nur die Karte verschoben und neu gerendert. 					
 					
 				/} else {*/
 					
-					
+
+					//console.log(tmp_x0);console.log(tmp_y0);console.log(tmp_x1);console.log(tmp_y1);
 					//wenn nicht mehr im selben Rechteck müssen weitere Rechtecke geladen werden:
 					if((newPositionX > tmp_x1) && (newPositionY > tmp_y1)) {
-						//nach rechts-oben 
+						//nach rechts-oben
 						
 					}
 					else if((newPositionX < tmp_x0) && (newPositionY < tmp_y0)) {
@@ -92,26 +93,53 @@
 					else if((newPositionX > tmp_x1) && (newPositionY < tmp_y0)) {
 						//nach rechts-unten
 					} else if (tmp_x1 < newPositionX) {					
-						//nach rechts 
-						/*buildingRectanglesIndexArray.length = 0; //IndexString zurücksetzen 
-						for(var i=1; i<=buildingRectangles.length; i++) {
-							//erst einmal alle Indizes um eins nach links verschieben
-							buildingRectanglesIndexArray[i-1] = buildingRectanglesIndexArray[i];
+						//nach rechts
+						for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+							for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+								if (i != loadRectanglesHorizontal) {
+									//alles nach links verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i+1][j]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + (1+loadRectanglesHorizontal)*stepLongitude, tmp_y0 + j*stepLatitude , tmp_x1 + (1+loadRectanglesHorizontal)*stepLongitude, tmp_y1 + j*stepLatitude);
+							}
 						}
-						for(var i=0; i<buildingRectangles.length; i+=2*loadRectanglesHorizontal+1) {
-							buildingRectangles[i] 			= getVectorRectangle(tmp_x1, tmp_y1, tmp_x1+, tmp_y1+);
-							buildingRectanglesIndexArray[i] = i+1; 
-						}*/
-						
 					} else if (tmp_x0 > newPositionX) {
 						//nach links 
-						
+						for (var i= loadRectanglesHorizontal; i >= -loadRectanglesHorizontal; i--) {
+							for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+								if (i != -loadRectanglesHorizontal) {
+									//alles nach rechts verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i-1][j]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 - (1+loadRectanglesHorizontal)*stepLongitude, tmp_y0 + j*stepLatitude , tmp_x1 - (1+loadRectanglesHorizontal)*stepLongitude, tmp_y1 + j*stepLatitude);
+							}
+						} console.log("moveleft");
 					} else if (tmp_y0 < newPositionY) {
 						//nach oben 
-						
+						for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+							for(var j= -loadRectanglesVertical; j <= loadRectanglesVertical; j++) {	
+								if (j != loadRectanglesVertical) {
+									//alles nach unten verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i][j+1]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + i*stepLongitude, tmp_y0 + loadRectanglesVertical*stepLatitude , tmp_x1 + i*stepLongitude, tmp_y1 + loadRectanglesVertical*stepLatitude);
+							}
+						}
 					} else if (tmp_y0 > newPositionY) {
 						//nach unten 
-						
+						for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+							for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+								if (j != -loadRectanglesVertical) {
+									//alles nach oben verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i][j-1]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + i*stepLongitude, tmp_y0 - (1+loadRectanglesVertical)*stepLatitude , tmp_x1 + i*stepLongitude, tmp_y1 - (1+loadRectanglesVertical)*stepLatitude);
+							}
+						}
 					}
 					
 					
@@ -143,8 +171,8 @@
 			
 			var buildings;
 			
-			init();
-			animate();
+			//init();
+			//animate();
 
 
 		</script>
