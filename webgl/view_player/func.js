@@ -5,7 +5,7 @@
 		y0 = Math.round(y0*1000)/1000;
 		x1 = Math.round(x1*1000)/1000;
 		y1 = Math.round(y1*1000)/1000;
-		console.log('('+x0+','+y0+'),('+x1+','+y1+')');
+		console.log('('+x0+','+y0+'),('+x1+','+y1+')   Ergebniss: '+localStorage['('+x0+','+y0+'),('+x1+','+y1+')']);
 		if (localStorage['('+x0+','+y0+'),('+x1+','+y1+')'] != undefined) {
 			//Rechteck-Ausschnitt der Vektoren vorhanden.
 			//console.log("Ausgabe: "+localStorage['('+x0+','+y0+'),('+x1+','+y1+')']);

@@ -124,8 +124,10 @@
 									//alles nach unten verschieben 
 									buildingRectangles[i][j] = buildingRectangles[i][j+1]; 
 									continue;
-								}
-								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + i*stepLongitude, tmp_y0 + loadRectanglesVertical*stepLatitude , tmp_x1 + i*stepLongitude, tmp_y1 + loadRectanglesVertical*stepLatitude);
+								}								
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + i*stepLongitude, tmp_y0 + (1+loadRectanglesVertical)*stepLatitude , tmp_x1 + i*stepLongitude, tmp_y1 + (1+loadRectanglesVertical)*stepLatitude);
+								/// WARUM KLAPPT DAS?!?!?!?!?!?!?!?!??!?!?!?!?!?!? 							Kein (1+..)*.. 
+								console.log(tmp_y0 +" "+ loadRectanglesVertical*stepLatitude + " "+(tmp_y0 + loadRectanglesVertical*stepLatitude));
 							}
 						}
 					} else if (tmp_y0 > newPositionY) {
