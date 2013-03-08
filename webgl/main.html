@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js canvas - camera - orthographic</title>
+		<title>Mittelpunkt User</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<?xml version="1.0" encoding="utf-8"?>
+		<WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/webview"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		/>
 		<style>
 			body {
 				font-family: Monospace;
@@ -16,163 +24,195 @@
 	<body>
 
 		<script src="three.min.js"></script>
+		<script src="func.js"></script>
 		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 		
 		<script>
-
-			var container/*, stats;*/;
-			var camera, scene, renderer;
+			//Festwerte:
+			var stepLongitude = 0.02;	//X Breite eines zu speichernden Rechtecks 
+			var stepLatitude  = 0.01;	//Y Höhe eines zu speichernden Rechtecks			
+			var loadRectanglesHorizontal = 1;	// Anzahl der Rechtecke die jeweils links und rechts vom aktuellen Rechteck geladen werden. Integer!!! 
+			var loadRectanglesVertical   = 1;	// Anzahl der Rechtecke die jeweils oben  und unten  vom aktuellen Rechteck geladen werden. Integer!!! 
 			
-			var vect = getFromText("inputs.txt");
-			var leftUpperLongitude  = 8.697083; //Laengengrad X		x0 
-            var leftUpperLatitude   = 49.412132;//Breitengrad Y     y0
-            var rightBottomLongitude= 8.700972; //Laengengrad X     x1
-            var rightBottomLatitude = 49.410429;//Breitengrad Y     y1
 			
-			init();
-			animate();			
 			
-	        function getFromText(input)
-	        {
-                var vectors = new Array();
-                $.ajax({
-	                url: input,
-	                dataType: "text",
-	                async: false,
-	                success: function(data){
-                       var tmp_1 = data.split("\n");
-                       for(var i=0; i < tmp_1.length; i++) {
-	                       vectors[i] = new Array();                                                      
-	                       //LINESTRING( ) entfernen
-	                       tmp_1[i] = tmp_1[i].substring(11, tmp_1[i].indexOf(")"));
-	                      
-	                       var tmp_2 = tmp_1[i].split(",");                                                       
-	                       for(var j=0; j < tmp_2.length; j++)
-	                       {
-								vectors[i][j] = tmp_2[j].split(" ");
-								for(var k=0;k<vectors[i][j].length;k++) {
-									vectors[i][j][k] = parseFloat(vectors[i][j][k]);
-									
-								}
-	                       }
-                       }                                              
-	                }
-                });    
-                return vectors;
-	        }
-
-			function init() {
-
-				container = document.createElement( 'div' );
-				document.body.appendChild( container );
-				
-				
-				camera = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, - 500, 2000 );
-				camera.position.x = 200;
-				camera.position.y = 100;
-				camera.position.z = 200;
-
-				scene = new THREE.Scene();
-
-
-				//Vektoren hinzufügen
-				
-				var geometry = new THREE.Geometry();
-				
-				
-				/*var Xmax = rightBottomLongitude - leftUpperLongitude;                                  
-                var Ymax = rightBottomLatitude - leftUpperLatitude;
-				for (var stra=0; stra < vect.length; stra++)
-                {
-                    for (var vec=0; vec < vect[stra].length-1; vec++)
-                    {    
-                    	var XKordStart = (vect[stra][vec][0] - leftUpperLongitude) / (Xmax/window.innerWidth);
-                        var YKordStart = (vect[stra][vec][1] - leftUpperLatitude) / (Ymax/window.innerHeight);
-                        var XKordFinish = (vect[stra][vec+1][0] - leftUpperLongitude) / (Xmax/window.innerWidth);
-                        var YKordFinish = (vect[stra][vec+1][1] - leftUpperLatitude) / (Ymax/window.innerHeight);
-                        
-                        geometry.vertices.push( new THREE.Vector3(XKordStart , YKordStart, 0 ) ); //Startwert
-        				geometry.vertices.push( new THREE.Vector3(XKordFinish, YKordFinish, 0 ) ); //Endwert
-					}
-				}	*/			
-				//geometry.vertices.push( new THREE.Vector3( 0, 0,50 ) );
-				//geometry.vertices.push( new THREE.Vector3( 50, 0, 0 ) );
-				
-				var Xmax = rightBottomLongitude - leftUpperLongitude;					
-				var Ymax = rightBottomLatitude - leftUpperLatitude;
-				for (var stra=0; stra < vect.length; stra++)
-				{
-					vect[stra][0][0] -= leftUpperLongitude;
-					vect[stra][0][1] -= leftUpperLatitude;
-					vect[stra][0][0] /= (Xmax/window.innerWidth);
-					vect[stra][0][1] /= (Ymax/window.innerHeight);
-					for (var vec=0; vec < vect[stra].length-1; vec++)
-					{
-						vect[stra][vec+1][0] -= leftUpperLongitude;
-						vect[stra][vec+1][1] -= leftUpperLatitude;
-							// Jeder Vektor wird relativ zur oberen, linken Ecke angegeben;
-						vect[stra][vec+1][0] /= (Xmax/window.innerWidth);
-						vect[stra][vec+1][1] /= (Ymax/window.innerHeight);
-						//alert(vect[stra][vec][0]+"\n"+vect[stra][vec][1]+"\n"+vect[stra][vec+1][0]+"\n"+vect[stra][vec+1][1]);
-						
-						geometry.vertices.push( new THREE.Vector3(vect[stra][vec][0], vect[stra][vec][1], 0 ) ); //Startwert
-        				geometry.vertices.push( new THREE.Vector3(vect[stra][vec+1][0], vect[stra][vec+1][1], 0 ) ); //Endwert	
-					}
+			//Variable Werte:			
+			var buildingRectangles 				= []; 	//Container der alle immoment sichtbaren Elemente enthält 
+			var buildingRectanglesIndexArray 	= [];	//Der Wert vom Index i dieses Arrays gibt an, welchen ...  
+			//buildingRectangles ist ein zweidimensionales Array, wobei [0][0] das mittlere Rechteck ist, [-1][1] links oben usw. 
+			for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {							
+				buildingRectangles[i] = [];
+				for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {
+					buildingRectangles[i][j] = [];
 				}
+			}
+			
+			//beim Initialisieren festlegen!!!!! Aktuelle Position des Users 
+			var userPositionLongitude = 8.698735;	//Laengengrad X 
+			var userPositionLatitude  = 49.410638;	//Breitengrad Y  
+			
+			//Aktionen, die beim Verändern der aktuellen GPS Koordinate ausgeführt werden soll. Übergeben werden die neuen Koordinaten des Users 
+			function onUserMove(x,y) {
+				//Überprüfen, ob wirklich Position geändert wurde 
+				if ( (userPositionLongitude != x) || (userPositionLatitude != y) ) {
+					//Karte aktualsieren, neue Werte übergeben 
+					actualizeMap(x,y);
+					//GPS Koordinaten global aktualisieren 
+					userPositionLongitude = x;
+					userPositionLatitude = y;					
+				}
+			}
+			
+			//Funktion bekommt neue Daten 
+			function actualizeMap(newPositionX, newPositionY) {
+				//Prüfen ob noch innerhalb eines vorgegeben Rechtecks 					
+				var tmp_x0 = Math.floor(1/stepLongitude * userPositionLongitude)/ (1/stepLongitude);//alter X Wert links unten (Position noch nicht global in userPosition geschrieben) 
+				var tmp_y0 = Math.floor(1/stepLatitude  * userPositionLatitude) / (1/stepLatitude);	//alter Y Wert links unten 
+				var tmp_x1 = Math.round((tmp_x0 + stepLongitude)*1000)/1000;						//alter X Wert rechts oben 
+				var tmp_y1 = Math.round((tmp_y0 + stepLatitude)*1000)/1000;							//alter Y Wert rechts oben 
+				/*if ((tmp_x0 < newPositionX) && (tmp_y0 < newPositionY) && (tmp_x1 > newPositionX) && (tmp_y1 > newPositionY) ) {
+					//falls ja, muss nichts neu geladen werden, nur die Karte verschoben und neu gerendert. 					
+					
+				/} else {*/
+					
+
+					//console.log(tmp_x0);console.log(tmp_y0);console.log(tmp_x1);console.log(tmp_y1);
+					//wenn nicht mehr im selben Rechteck müssen weitere Rechtecke geladen werden:
+					if((newPositionX > tmp_x1) && (newPositionY > tmp_y1)) {
+						//nach rechts-oben
+						for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+							for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+								if ((i != loadRectanglesHorizontal) && (j != loadRectanglesVertical)) {
+									//alles nach links unten verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i+1][j+1]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + (i+1)*stepLongitude, tmp_y0 + (j+1)*stepLatitude , tmp_x1 + (i+1)*stepLongitude, tmp_y1 + (j+1)*stepLatitude);
+							}
+						}					
+
+					}
+					else if((newPositionX < tmp_x0) && (newPositionY < tmp_y0)) {
+						//nach links-unten 
+						for (var i= loadRectanglesHorizontal; i >= -loadRectanglesHorizontal; i--) {
+							for(var j= -loadRectanglesVertical; j <= loadRectanglesVertical; j++) {	
+								if ((i != -loadRectanglesHorizontal) && (j != -loadRectanglesVertical)) {
+									//alles nach rechts oben verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i-1][j-1]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + (i-1)*stepLongitude, tmp_y0 + (j-1)*stepLatitude , tmp_x1 + (i-1)*stepLongitude, tmp_y1 + (j-1)*stepLatitude);
+							}
+						}
+					}
+					else if((newPositionX < tmp_x0) && (newPositionY > tmp_y1)) {
+						//nach links-oben 
+						for (var i= loadRectanglesHorizontal; i >= -loadRectanglesHorizontal; i--) {
+							for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+								if ((i != -loadRectanglesHorizontal) && (j != loadRectanglesVertical)) {
+									//alles nach rechts unten verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i-1][j+1]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + (i-1)*stepLongitude, tmp_y0 + (j+1)*stepLatitude , tmp_x1 + (i-1)*stepLongitude, tmp_y1 + (j+1)*stepLatitude);
+							}
+						}
+					}
+					else if((newPositionX > tmp_x1) && (newPositionY < tmp_y0)) {
+						//nach rechts-unten
+						for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+							for(var j= -loadRectanglesVertical; j <= loadRectanglesVertical; j++) {	
+								if ((i != loadRectanglesHorizontal) && (j != -loadRectanglesVertical)) {
+									//alles nach links oben verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i+1][j-1]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + (i+1)*stepLongitude, tmp_y0 + (j-1)*stepLatitude , tmp_x1 + (i+1)*stepLongitude, tmp_y1 + (j-1)*stepLatitude);
+							}
+						}
+					} else if (tmp_x1 < newPositionX) {					
+						//nach rechts
+						for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+							for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+								if (i != loadRectanglesHorizontal) {
+									//alles nach links verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i+1][j]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + (1+loadRectanglesHorizontal)*stepLongitude, tmp_y0 + j*stepLatitude , tmp_x1 + (1+loadRectanglesHorizontal)*stepLongitude, tmp_y1 + j*stepLatitude);
+							}
+						}
+					} else if (tmp_x0 > newPositionX) {
+						//nach links 
+						for (var i= loadRectanglesHorizontal; i >= -loadRectanglesHorizontal; i--) {
+							for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+								if (i != -loadRectanglesHorizontal) {
+									//alles nach rechts verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i-1][j]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 - (1+loadRectanglesHorizontal)*stepLongitude, tmp_y0 + j*stepLatitude , tmp_x1 - (1+loadRectanglesHorizontal)*stepLongitude, tmp_y1 + j*stepLatitude);
+							}
+						}
+					} else if (tmp_y0 < newPositionY) {
+						//nach oben 
+						for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+							for(var j= -loadRectanglesVertical; j <= loadRectanglesVertical; j++) {	
+								if (j != loadRectanglesVertical) {
+									//alles nach unten verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i][j+1]; 
+									continue;
+								}								
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + i*stepLongitude, tmp_y0 + (1+loadRectanglesVertical)*stepLatitude , tmp_x1 + i*stepLongitude, tmp_y1 + (1+loadRectanglesVertical)*stepLatitude);
+								//console.log(tmp_y0 +" "+ loadRectanglesVertical*stepLatitude + " "+(tmp_y0 + loadRectanglesVertical*stepLatitude));
+							}
+						}
+					} else if (tmp_y0 > newPositionY) {
+						//nach unten 
+						for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+							for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+								if (j != -loadRectanglesVertical) {
+									//alles nach oben verschieben 
+									buildingRectangles[i][j] = buildingRectangles[i][j-1]; 
+									continue;
+								}
+								buildingRectangles[i][j] = getVectorRectangle(tmp_x0 + i*stepLongitude, tmp_y0 - (1+loadRectanglesVertical)*stepLatitude , tmp_x1 + i*stepLongitude, tmp_y1 - (1+loadRectanglesVertical)*stepLatitude);
+							}
+						}
+					}
+					
+					
+				//} 
+			}
+			
+			//Funktion zum hinzufügen eines Rechtsecks 
+			function addVectorRectangle(id, tmpVectorArray) {
 				
+			}
+			
+			//Funktion zum löschen eines Rechtsecks 
+			function removeVectorRectangle(id, tmpVectorArray) {
 				
-				var material = new THREE.LineBasicMaterial( { color: 0x000000, opacity: 1,linewidth: 2 } ); //Eigenschaften der Vektoren
-
-				var streets = new THREE.Line( geometry, material );
-				streets.type = THREE.LinePieces;
-				scene.add( streets );
-
-
-				renderer = new THREE.CanvasRenderer();
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-				container.appendChild( renderer.domElement );
-
-
-
-				window.addEventListener( 'resize', onWindowResize, false );
-
 			}
 
-			function onWindowResize() {
+			
+			var leftUpperLongitude  = 0; //Laengengrad X	x0 
+	        var leftUpperLatitude   = 0; //Breitengrad Y	y0 
+	        var rightBottomLongitude  = 0; //Laengengrad X	x1 
+	        var rightBottomLatitude   = 0; //Breitengrad Y	y1 	        
+	        
+	        
+	         
+	        
+	        var container;
+			var camera, scene, renderer;
+			var zoom = 2.5; //mindestens 2
+			
+			var buildings;
+			
+			//init();
+			//animate();
 
-				camera.left = window.innerWidth / - 2;
-				camera.right = window.innerWidth / 2;
-				camera.top = window.innerHeight / 2;
-				camera.bottom = window.innerHeight / - 2;
-
-				camera.updateProjectionMatrix();
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
-
-			//
-
-			function animate() {
-
-				requestAnimationFrame( animate );
-
-				render();
-				//stats.update();
-
-			}
-
-			function render() {
-				
-				camera.position.x = 00;
-				camera.position.y = 00;
-				camera.position.z = 100;				
-				camera.lookAt( scene.position );
-
-				renderer.render( scene, camera );
-
-			}
 
 		</script>
 
