@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Mittelpunkt Initialisierungspunkt</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<?xml version="1.0" encoding="utf-8"?>
+		<WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/webview"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		/>
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #f0f0f0;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="three.min.js"></script>
+		<script src="func.js"></script>
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		
+		<script>
+			//Festwerte:
+			var stepLongitude = 0.02;	//X Breite eines zu speichernden Rechtecks 
+			var stepLatitude  = 0.01;	//Y Höhe eines zu speichernden Rechtecks			
+			var decimalPlace  = 2;		//Anzahl der Nachkommastellen, auf die gerundet werden soll, da JS nicht mit Float Zahlen umgehen kann 
+			var loadRectanglesHorizontal = 1;	// Anzahl der Rechtecke die jeweils links und rechts vom aktuellen Rechteck geladen werden. Integer!!! 
+			var loadRectanglesVertical   = 1;	// Anzahl der Rechtecke die jeweils oben  und unten  vom aktuellen Rechteck geladen werden. Integer!!! 
+			var scaleLongitude = 100000;	// Skalierungsgröße X. Ein Laengengrad entspricht so vielen Pixeln wie hier angegeben. 
+			var scaleLatitude  = 100000;	// Skalierungsgröße Y. Ein Breitengrad entspricht so vielen Pixeln wie hier angegeben.
+								//dies spaeter variabel, je nach User-Position 
+			
+			
+			//Punkt, an dem sich der User zum Start/Initialisierungspunkt befindet. Dieser wird als 3-dimensionaliger Nullpunkt im Koordinatenkreuz genommen.
+	        //um Koordinaten anzeigen zu lassen, müssen diese Werte am Anfang abgezogen werden und entsprechend skaliert werden. 
+	        var initializationLongitude = 8.698735;  	//X 
+	        var initializationLatitude  = 49.410638;	//Y 
+			
+			//beim Initialisieren festlegen!!!!! Aktuelle Position des Users 
+			var userPositionLongitude = 8.698735;	//Laengengrad X 
+			var userPositionLatitude  = 49.410638;	//Breitengrad Y  
+			
+			//Aktionen, die beim Verändern der aktuellen GPS Koordinate ausgeführt werden soll. Übergeben werden die neuen Koordinaten des Users 
+			function onUserMove(x,y) {
+				//Überprüfen, ob wirklich Position geändert wurde 
+				if ( (userPositionLongitude != x) || (userPositionLatitude != y) ) {
+					//Karte aktualsieren, neue Werte übergeben 
+					actualizeMap(x,y);
+					//GPS Koordinaten global aktualisieren 
+					userPositionLongitude = x;
+					userPositionLatitude = y;					
+				}
+			}
+			
+			//Funktion bekommt neue Daten 
+			function actualizeMap(newPositionX, newPositionY) {
+				//Prüfen ob noch innerhalb eines vorgegeben Rechtecks 					
+				var tmp_x0 = Math.floor(1/stepLongitude * userPositionLongitude)/ (1/stepLongitude);//alter X Wert links unten (Position noch nicht global in userPosition geschrieben) 
+				var tmp_y0 = Math.floor(1/stepLatitude  * userPositionLatitude) / (1/stepLatitude);	//alter Y Wert links unten 
+				var tmp_x1 = tmp_x0 + stepLongitude;						//alter X Wert rechts oben 
+				var tmp_y1 = tmp_y0 + stepLatitude;							//alter Y Wert rechts oben 
+				tmp_x0 = parseFloat(x0).toFixed(decimalPlace);
+				tmp_y0 = parseFloat(y0).toFixed(decimalPlace);
+				tmp_x1 = parseFloat(x1).toFixed(decimalPlace);
+				tmp_y1 = parseFloat(y1).toFixed(decimalPlace);
+				console.log("LOG");
+				console.log(tmp_x0);
+				console.log(tmp_y0);
+				console.log(tmp_x1);
+				console.log(tmp_y1);
+				
+				//wenn nicht mehr im selben Rechteck müssen weitere Rechtecke geladen werden:
+				if((newPositionX > tmp_x1) && (newPositionY > tmp_y1)) {
+					//nach rechts-oben
+					for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+						for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+							if ((i == loadRectanglesHorizontal) || (j == loadRectanglesVertical)) {
+								var x0 = tmp_x0 + (i+1)*parseFloat(stepLongitude);;
+									x0 = parseFloat(x0).toFixed(decimalPlace);
+								var y0 = tmp_y0 + (j+1)*parseFloat(stepLatitude);
+									y0 = parseFloat(y0).toFixed(decimalPlace);
+								var x1 = tmp_x1 + (i+1)*parseFloat(stepLongitude);;
+									x1 = parseFloat(x1).toFixed(decimalPlace);
+								var y1 = tmp_y1 + (j+1)*parseFloat(stepLatitude);
+									y1 = parseFloat(y1).toFixed(decimalPlace);
+								var tmp = getBuildingVectorRectangle(x0, y0 , x1, y1);
+								addBuildingVectorRectangle("[["+x0+","+y0+"],["+x1+","+y1+"]]", tmp);
+							}
+						}
+					}					
+
+				}
+				else if((newPositionX < tmp_x0) && (newPositionY < tmp_y0)) {
+					//nach links-unten 
+					for (var i= loadRectanglesHorizontal; i >= -loadRectanglesHorizontal; i--) {
+						for(var j= -loadRectanglesVertical; j <= loadRectanglesVertical; j++) {	
+							if ((i == -loadRectanglesHorizontal) || (j == -loadRectanglesVertical)) {
+								var x0 = tmp_x0 + (i-1)*parseFloat(stepLongitude);;
+									x0 = parseFloat(x0).toFixed(decimalPlace);
+								var y0 = tmp_y0 + (j-1)*parseFloat(stepLatitude);
+									y0 = parseFloat(y0).toFixed(decimalPlace);
+								var x1 = tmp_x1 + (i-1)*parseFloat(stepLongitude);;
+									x1 = parseFloat(x1).toFixed(decimalPlace);
+								var y1 = tmp_y1 + (j-1)*parseFloat(stepLatitude);
+									y1 = parseFloat(y1).toFixed(decimalPlace);
+								var tmp = getBuildingVectorRectangle(x0, y0 , x1, y1);
+								addBuildingVectorRectangle("[["+x0+","+y0+"],["+x1+","+y1+"]]", tmp);
+							}
+						}
+					}
+				}
+				else if((newPositionX < tmp_x0) && (newPositionY > tmp_y1)) {
+					//nach links-oben 
+					for (var i= loadRectanglesHorizontal; i >= -loadRectanglesHorizontal; i--) {
+						for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+							if ((i == -loadRectanglesHorizontal) || (j == loadRectanglesVertical)) {
+								var x0 = tmp_x0 + (i-1)*parseFloat(stepLongitude);;
+									x0 = parseFloat(x0).toFixed(decimalPlace);
+								var y0 = tmp_y0 + (j+1)*parseFloat(stepLatitude);
+									y0 = parseFloat(y0).toFixed(decimalPlace);
+								var x1 = tmp_x1 + (i-1)*parseFloat(stepLongitude);;
+									x1 = parseFloat(x1).toFixed(decimalPlace);
+								var y1 = tmp_y1 + (j+1)*parseFloat(stepLatitude);
+									y1 = parseFloat(y1).toFixed(decimalPlace);
+								var tmp = getBuildingVectorRectangle(x0, y0 , x1, y1);
+								addBuildingVectorRectangle("[["+x0+","+y0+"],["+x1+","+y1+"]]", tmp);
+							}
+						}
+					}
+				}
+				else if((newPositionX > tmp_x1) && (newPositionY < tmp_y0)) {
+					//nach rechts-unten
+					for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+						for(var j= -loadRectanglesVertical; j <= loadRectanglesVertical; j++) {	
+							if ((i == loadRectanglesHorizontal) || (j == -loadRectanglesVertical)) {
+								var x0 = tmp_x0 + (i+1)*parseFloat(stepLongitude);;
+									x0 = parseFloat(x0).toFixed(decimalPlace);
+								var y0 = tmp_y0 + (j-1)*parseFloat(stepLatitude);
+									y0 = parseFloat(y0).toFixed(decimalPlace);
+								var x1 = tmp_x1 + (i+1)*parseFloat(stepLongitude);;
+									x1 = parseFloat(x1).toFixed(decimalPlace);
+								var y1 = tmp_y1 + (j-1)*parseFloat(stepLatitude);
+									y1 = parseFloat(y1).toFixed(decimalPlace);
+								var tmp = getBuildingVectorRectangle(x0, y0 , x1, y1);
+								addBuildingVectorRectangle("[["+x0+","+y0+"],["+x1+","+y1+"]]", tmp);
+							}
+						}
+					}
+				} else if (tmp_x1 < newPositionX) {					
+					//nach rechts
+					for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+						for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+							if (i == loadRectanglesHorizontal) {
+								var x0 = tmp_x0 + (1+loadRectanglesHorizontal)*parseFloat(stepLongitude);;
+									x0 = parseFloat(x0).toFixed(decimalPlace);
+								var y0 = tmp_y0 + j*parseFloat(stepLatitude);
+									y0 = parseFloat(y0).toFixed(decimalPlace);
+								var x1 = tmp_x1 + (1+loadRectanglesHorizontal)*parseFloat(stepLongitude);;
+									x1 = parseFloat(x1).toFixed(decimalPlace);
+								var y1 = tmp_y1 + j*parseFloat(stepLatitude);
+									y1 = parseFloat(y1).toFixed(decimalPlace);
+								var tmp = getBuildingVectorRectangle(x0, y0 , x1, y1);
+								addBuildingVectorRectangle("[["+x0+","+y0+"],["+x1+","+y1+"]]", tmp);
+							}
+						}
+					}
+				} else if (tmp_x0 > newPositionX) {
+					//nach links 
+					for (var i= loadRectanglesHorizontal; i >= -loadRectanglesHorizontal; i--) {
+						for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+							if (i == -loadRectanglesHorizontal) {
+								var x0 = tmp_x0 - (1+loadRectanglesHorizontal)*parseFloat(stepLongitude);;
+									x0 = parseFloat(x0).toFixed(decimalPlace);
+								var y0 = tmp_y0 + j*parseFloat(stepLatitude);
+									y0 = parseFloat(y0).toFixed(decimalPlace);
+								var x1 = tmp_x1 - (1+loadRectanglesHorizontal)*parseFloat(stepLongitude);;
+									x1 = parseFloat(x1).toFixed(decimalPlace);
+								var y1 = tmp_y1 + j*parseFloat(stepLatitude);
+									y1 = parseFloat(y1).toFixed(decimalPlace);
+								var tmp = getBuildingVectorRectangle(x0, y0 , x1, y1);
+								addBuildingVectorRectangle("[["+x0+","+y0+"],["+x1+","+y1+"]]", tmp);
+							}
+						}
+					}
+				} else if (tmp_y0 < newPositionY) {
+					//nach oben 
+					for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+						for(var j= -loadRectanglesVertical; j <= loadRectanglesVertical; j++) {	
+							if (j == loadRectanglesVertical) {
+								var x0 = tmp_x0 + i*parseFloat(stepLongitude);
+									x0 = parseFloat(x0).toFixed(decimalPlace);
+								var y0 = tmp_y0 + (1+loadRectanglesVertical)*parseFloat(stepLatitude);
+									y0 = parseFloat(y0).toFixed(decimalPlace);
+								var x1 = tmp_x1 + i*parseFloat(stepLongitude);
+									x1 = parseFloat(x1).toFixed(decimalPlace);
+								var y1 = tmp_y1 + (1+loadRectanglesVertical)*parseFloat(stepLatitude);
+									y0 = parseFloat(y0).toFixed(decimalPlace);
+								var tmp = getBuildingVectorRectangle(x0, y0 , x1, y1);
+								addBuildingVectorRectangle("[["+x0+","+y0+"],["+x1+","+y1+"]]", tmp);
+							}
+						}
+					}
+				} else if (tmp_y0 > newPositionY) {
+					//nach unten 
+					for (var i= -loadRectanglesHorizontal; i <= loadRectanglesHorizontal; i++) {
+						for(var j= loadRectanglesVertical; j >= -loadRectanglesVertical; j--) {	
+							if (j == -loadRectanglesVertical) {
+								var x0 = tmp_x0 + i*parseFloat(stepLongitude);
+									x0 = parseFloat(x0).toFixed(decimalPlace);
+								var y0 = tmp_y0 - (1+loadRectanglesVertical)*parseFloat(stepLatitude);
+									y0 = parseFloat(y0).toFixed(decimalPlace);
+								var x1 = tmp_x1 + i*parseFloat(stepLongitude);
+									x1 = parseFloat(x1).toFixed(decimalPlace);
+								var y1 = tmp_y1 - (1+loadRectanglesVertical)*parseFloat(stepLatitude);
+									y1 = parseFloat(y1).toFixed(decimalPlace);
+								var tmp = getBuildingVectorRectangle(x0, y0 , x1, y1);							
+								addBuildingVectorRectangle("[["+x0+","+y0+"],["+x1+","+y1+"]]", tmp);
+							}
+						}
+					}
+				}
+				
+				//Kamera aktualisieren 
+				
+									
+			}
+			
+			
+			//Funktion zum löschen eines Rechtsecks 
+			/*function removeBuildingVectorRectangle(key) {
+				//Überprüfen ob vorhanden
+				if() {
+					
+				}
+			}*/
+
+			
+			//Funktion zum hinzufügen eines Rechtsecks 
+			function addBuildingVectorRectangle(key, tmpVectorArray) {				
+							    
+			    var geometry = new THREE.Geometry();
+				for (var buildingNR=0; buildingNR < tmpVectorArray.length; buildingNR++)
+				{
+					for (var polygonNR=0; polygonNR < 1/*tmpVectorArray[buildingNR].length*/; polygonNR++)
+					{
+						tmpVectorArray[buildingNR][polygonNR][0][0] -= initializationLongitude;
+						tmpVectorArray[buildingNR][polygonNR][0][1] -= initializationLatitude;
+						tmpVectorArray[buildingNR][polygonNR][0][0] *= scaleLongitude;
+						tmpVectorArray[buildingNR][polygonNR][0][1] *= scaleLatitude;
+						for (var vectorNR=0; vectorNR < tmpVectorArray[buildingNR][polygonNR].length-1; vectorNR++)
+						{					
+							tmpVectorArray[buildingNR][polygonNR][vectorNR+1][0] -= initializationLongitude;
+							tmpVectorArray[buildingNR][polygonNR][vectorNR+1][1] -= initializationLatitude;
+							tmpVectorArray[buildingNR][polygonNR][vectorNR+1][0] *= scaleLongitude;
+							tmpVectorArray[buildingNR][polygonNR][vectorNR+1][1] *= scaleLatitude;
+							
+							geometry.vertices.push( new THREE.Vector3(tmpVectorArray[buildingNR][polygonNR][vectorNR][0],   0, tmpVectorArray[buildingNR][polygonNR][vectorNR][1] ) ); //Startwert 
+							geometry.vertices.push( new THREE.Vector3(tmpVectorArray[buildingNR][polygonNR][vectorNR+1][0], 0, tmpVectorArray[buildingNR][polygonNR][vectorNR+1][1] ) ); //Endwert
+						}
+					}
+				}
+				var material = new THREE.LineBasicMaterial( { color: 0x06123A, opacity: 1, linewidth: 2 } );
+				buildingsOnMap[key] = new THREE.Line(geometry, material);
+				buildingsOnMap[key].type = THREE.LinePieces;
+			    scene.add(buildingsOnMap[key]);		
+			    
+			    
+			    var geo = new THREE.Geometry();
+			    var tmp = JSON.parse(key);
+			    var tmp_x0 = parseFloat((tmp[0][0].toFixed(decimalPlace) - initializationLongitude)*scaleLongitude);
+				var tmp_y0 = parseFloat((tmp[0][1].toFixed(decimalPlace) - initializationLatitude)*scaleLatitude);
+				var tmp_x1 = parseFloat((tmp[1][0].toFixed(decimalPlace) - initializationLongitude)*scaleLongitude);
+				var tmp_y1 = parseFloat((tmp[1][1].toFixed(decimalPlace) - initializationLatitude)*scaleLatitude);
+			    geo.vertices.push( new THREE.Vector3(tmp_x0, 0,  tmp_y0));  
+			    geo.vertices.push( new THREE.Vector3(tmp_x1, 0,  tmp_y0));
+			    geo.vertices.push( new THREE.Vector3(tmp_x1, 0,  tmp_y0));
+			    geo.vertices.push( new THREE.Vector3(tmp_x1, 0,  tmp_y1));
+			    geo.vertices.push( new THREE.Vector3(tmp_x1, 0,  tmp_y1));
+			    geo.vertices.push( new THREE.Vector3(tmp_x0, 0,  tmp_y1));
+			    geo.vertices.push( new THREE.Vector3(tmp_x0, 0,  tmp_y1));
+			    geo.vertices.push( new THREE.Vector3(tmp_x0, 0,  tmp_y0));
+			    var material = new THREE.LineBasicMaterial( { color: 0xFF000, opacity: 0.5, linewidth: 1 } );
+			    var x = new THREE.Line(geo, material);
+			    x.type = THREE.LinePieces;
+			    scene.add(x);
+			}
+			
+	         
+	        
+	        var container;
+			var camera, scene, renderer;
+			var zoom = 2.5; //mindestens 2 
+			var buildingsOnMap = [], streetsOnMap = [];
+			
+			init();
+			animate();
+
+
+		</script>
+
+	</body>
+</html>
