@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Mittelpunkt Initialisierungspunkt</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<?xml version="1.0" encoding="utf-8"?>
+		<WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/webview"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		/>
+		<style>
+			body {
+				font-family: Monospace;
+				background-color: #f0f0f0;
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+
+		<script src="three.min.js"></script>
+		<script src="hud.js"></script>
+		<script src="func.js"></script>
+		<script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+		
+		<script>
+			var scWidth= window.innerWidth;
+			var scHeight= window.innerHeight;
+			//Festwerte:
+			var stepLongitude = 0.02;	//X Breite eines zu speichernden Rechtecks 
+			var stepLatitude  = 0.01;	//Y Höhe eines zu speichernden Rechtecks			
+			var decimalPlace  = 2;		//Anzahl der Nachkommastellen, auf die gerundet werden soll, da JS nicht mit Float Zahlen umgehen kann 
+			var loadRectanglesHorizontal = 1;	// Anzahl der Rechtecke die jeweils links und rechts vom aktuellen Rechteck geladen werden. Integer!!! 
+			var loadRectanglesVertical   = 1;	// Anzahl der Rechtecke die jeweils oben  und unten  vom aktuellen Rechteck geladen werden. Integer!!! 
+			var scaleLongitude = 100000;	// Skalierungsgröße X. Ein Laengengrad entspricht so vielen Pixeln wie hier angegeben. 
+			var scaleLatitude  = 100000;	// Skalierungsgröße Y. Ein Breitengrad entspricht so vielen Pixeln wie hier angegeben.
+								//dies spaeter variabel, je nach User-Position 
+			
+			//Punkt, an dem sich der User zum Start/Initialisierungspunkt befindet. Dieser wird als 3-dimensionaliger Nullpunkt im Koordinatenkreuz genommen.
+			//um Koordinaten anzeigen zu lassen, müssen diese Werte am Anfang abgezogen werden und entsprechend skaliert werden. 
+			var initializationLongitude = 8.698735;  	//X 
+			var initializationLatitude  = 49.410638;	//Y 
+			
+			//beim Initialisieren festlegen!!!!! Aktuelle Position des Users 
+			var userPositionLongitude = 8.698735;	//Laengengrad X 
+			var userPositionLatitude  = 49.410638;	//Breitengrad Y  
+  
+	    var container;
+			var camera, scene, renderer;
+			var zoom = 2.5; //mindestens 2 
+			var buildingsOnMap = [], streetsOnMap = [];
+			
+			init();
+			initHUD();
+			animate();
+
+
+		</script>
+
+	</body>
+</html>
